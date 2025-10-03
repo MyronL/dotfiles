@@ -1,0 +1,12 @@
+theme = "TokyoNight Night"
+font-family = "MesloLGS Nerd Font Mono"
+macos-titlebar-proxy-icon = hidden
+title = " "
+font-size = 19
+font-thicken = true
+macos-icon = holographic
+window-padding-y = 8,0
+window-padding-x = 5
+macos-titlebar-style = hidden
+window-padding-balance = true
+custom-shader = shaders/cursor_smear.glsl 
