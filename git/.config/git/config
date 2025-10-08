@@ -16,7 +16,7 @@
     diffFilter = delta --color-only
 
 [include]
-    path = ~/delta/themes.gitconfig
+    path = ~/.config/delta/themes.gitconfig
 
 [delta]
     navigate = true  # use n and N to move between diff sections
