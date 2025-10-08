@@ -1,0 +1,28 @@
+[alias]
+	st = status
+	co = checkout
+	ci = commit
+	br = branch
+	po = pull origin 
+[user]
+	name = Myron Loke
+	email = myronloke1@gmail.com
+
+[core]
+    pager = delta
+    editor = nvim
+
+[interactive]
+    diffFilter = delta --color-only
+
+[include]
+    path = ~/delta/themes.gitconfig
+
+[delta]
+    navigate = true  # use n and N to move between diff sections
+    features = tokyonight-night
+    dark = true      # or light = true, or omit for auto-detection
+    line-numbers = true
+
+[merge]
+    conflictstyle = zdiff3
