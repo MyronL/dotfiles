@@ -33,7 +33,18 @@ Built on [LazyVim](https://www.lazyvim.org/) with dual-mode support — detects 
 
 ### Window Management
 
-AeroSpace with automatic workspace assignment (terminals, browser, Slack, Spotify each get their own workspace), vim-style navigation (`alt-hjkl`), and 15px gaps.
+AeroSpace with automatic workspace assignment, vim-style navigation (`alt-hjkl`), and 15px gaps.
+
+| Workspace | App | Mnemonic |
+|-----------|-----|----------|
+| T | Ghostty | Terminal |
+| W | Zen Browser | Web |
+| 1 | Microsoft Teams | Teams |
+| C | Google Chrome | Chrome |
+| O | Microsoft Outlook | Outlook |
+| P | Postman | Postman |
+| M | Spotify | Music |
+| S | Slack | Slack |
 
 ### Shell
 
