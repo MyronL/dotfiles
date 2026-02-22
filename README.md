@@ -9,8 +9,10 @@ Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/). m
 | `aerospace/` | [AeroSpace](https://github.com/nikitabobko/AeroSpace) | i3-inspired tiling window manager for macOS |
 | `bat/` | [bat](https://github.com/sharkdp/bat) | `cat` replacement with syntax highlighting |
 | `delta/` | [delta](https://github.com/dandavid/delta) | Git diff viewer with syntax highlighting |
+| `gh/` | [GitHub CLI](https://cli.github.com/) | GitHub CLI aliases and settings |
 | `ghostty/` | [Ghostty](https://ghostty.org/) | GPU-accelerated terminal emulator |
 | `git/` | [Git](https://git-scm.com/) | Global git configuration and ignore rules |
+| `lazygit/` | [LazyGit](https://github.com/jesseduffield/lazygit) | Git TUI with delta pager |
 | `nvim/` | [Neovim](https://neovim.io/) | LazyVim-based config with VSCode-Neovim support |
 | `starship/` | [Starship](https://starship.rs/) | Cross-shell prompt |
 | `tmux/` | [tmux](https://github.com/tmux/tmux) | Terminal multiplexer |
@@ -63,7 +65,7 @@ cd ~/dotfiles
 The install script will:
 
 1. Install [Homebrew](https://brew.sh/) if not present
-2. Install all CLI tools (`bat`, `eza`, `fzf`, `git`, `git-delta`, `neovim`, `nvm`, `starship`, `stow`, `tmux`, `zoxide`, `zsh-autosuggestions`, `zsh-syntax-highlighting`)
+2. Install all CLI tools (`bat`, `eza`, `fd`, `fzf`, `gh`, `git`, `git-delta`, `lazygit`, `neovim`, `nvm`, `ripgrep`, `starship`, `stow`, `tmux`, `zoxide`, `zsh-autosuggestions`, `zsh-syntax-highlighting`)
 3. Install GUI apps (`aerospace`, `ghostty`, `wezterm`) and **MesloLGS Nerd Font** — skips any already installed
 4. Install [`borders`](https://github.com/FelixKratz/JankyBorders) for AeroSpace window borders
 5. Install [TPM](https://github.com/tmux-plugins/tpm) (Tmux Plugin Manager)
