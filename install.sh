@@ -11,11 +11,15 @@ echo "==> Installing Homebrew formulae"
 brew install \
     bat \
     eza \
+    fd \
     fzf \
+    gh \
     git \
     git-delta \
+    lazygit \
     neovim \
     nvm \
+    ripgrep \
     starship \
     stow \
     tmux \
@@ -59,7 +63,7 @@ nvm install --lts
 
 echo "==> Stowing dotfiles"
 cd "$(dirname "$0")"
-for dir in aerospace bat delta ghostty git nvim starship tmux wezterm zsh; do
+for dir in aerospace bat delta gh ghostty git lazygit nvim starship tmux wezterm zsh; do
     echo "    Stowing $dir"
     stow "$dir"
 done
