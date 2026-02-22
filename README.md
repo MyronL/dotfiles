@@ -75,16 +75,19 @@ cd ~/dotfiles
 
 The install script will:
 
-1. Install [Homebrew](https://brew.sh/) if not present
-2. Install all CLI tools (`bat`, `eza`, `fd`, `fzf`, `gh`, `git`, `git-delta`, `lazygit`, `neovim`, `nvm`, `ripgrep`, `starship`, `stow`, `tmux`, `zoxide`, `zsh-autosuggestions`, `zsh-syntax-highlighting`)
-3. Install GUI apps (`aerospace`, `ghostty`, `wezterm`) and **MesloLGS Nerd Font** — skips any already installed
-4. Install [`borders`](https://github.com/FelixKratz/JankyBorders) for AeroSpace window borders
-5. Install [TPM](https://github.com/tmux-plugins/tpm) (Tmux Plugin Manager)
-6. Install Node.js LTS via nvm
-7. Stow all dotfiles into `$HOME`
-8. Build the bat theme cache
+1. Check for **Xcode Command Line Tools** and prompt installation if missing
+2. Install [Homebrew](https://brew.sh/) if not present
+3. Install all CLI tools (`bat`, `eza`, `fd`, `fzf`, `gh`, `git`, `git-delta`, `lazygit`, `neovim`, `nvm`, `ripgrep`, `starship`, `stow`, `tmux`, `zoxide`, `zsh-autosuggestions`, `zsh-syntax-highlighting`)
+4. Install GUI apps (`aerospace`, `ghostty`, `wezterm`) and **MesloLGS Nerd Font** — skips any already installed
+5. Install [`borders`](https://github.com/FelixKratz/JankyBorders) for AeroSpace window borders
+6. Install [TPM](https://github.com/tmux-plugins/tpm) (Tmux Plugin Manager)
+7. Install Node.js LTS via nvm
+8. Stow all dotfiles into `$HOME` (uses `--adopt` to handle existing files)
+9. Install tmux plugins via TPM
+10. Reload tmux config if running inside a tmux session
+11. Build the bat theme cache
 
-After running, open tmux and press `C-s + I` to install tmux plugins, then open Neovim to auto-install plugins via lazy.nvim.
+After running, open Neovim to auto-install plugins via lazy.nvim.
 
 ### Manual stowing
 

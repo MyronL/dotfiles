@@ -1,6 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+echo "==> Checking for Xcode Command Line Tools"
+if ! xcode-select -p &>/dev/null; then
+    echo "    Installing Xcode Command Line Tools..."
+    xcode-select --install
+    echo "    Please wait for the installation to complete, then re-run this script."
+    exit 1
+else
+    echo "    Xcode Command Line Tools already installed"
+fi
+
 echo "==> Installing Homebrew (if not installed)"
 if ! command -v brew &>/dev/null; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -65,8 +75,16 @@ echo "==> Stowing dotfiles"
 cd "$(dirname "$0")"
 for dir in aerospace bat delta gh ghostty git lazygit nvim starship tmux wezterm zsh; do
     echo "    Stowing $dir"
-    stow "$dir"
+    stow --adopt "$dir"
 done
+
+echo "==> Installing tmux plugins"
+"$HOME/.tmux/plugins/tpm/bin/install_plugins"
+
+if [ -n "${TMUX:-}" ]; then
+    echo "==> Reloading tmux config"
+    tmux source-file ~/.tmux.conf
+fi
 
 echo "==> Building bat theme cache"
 bat cache --build
@@ -74,5 +92,4 @@ bat cache --build
 echo ""
 echo "Done! Next steps:"
 echo "  1. Restart your terminal"
-echo "  2. Open tmux and press C-s + I to install tmux plugins"
-echo "  3. Open Neovim — plugins will install automatically via lazy.nvim"
+echo "  2. Open Neovim — plugins will install automatically via lazy.nvim"
