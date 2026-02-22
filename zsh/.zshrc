@@ -52,7 +52,6 @@ export PATH="/opt/homebrew/bin:$PATH"
 
 
 
-# alias claude="/Users/myronloke/.claude/local/claude"
 export PATH="$HOME/.local/bin:$PATH"
 
 # Lazy-load nvm — only initializes when you first use node/npm/npx/nvm
