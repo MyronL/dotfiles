@@ -10,3 +10,4 @@ window-padding-x = 5
 macos-titlebar-style = hidden
 window-padding-balance = true
 custom-shader = shaders/cursor_smear_fade.glsl 
+keybind = shift+enter=text:\x1b\r
