@@ -232,7 +232,7 @@ if.app-id = "com.mitchellh.ghostty"
 run = 'move-node-to-workspace T'    # mnemonics T - Terminal
 
 [[on-window-detected]]
-if.app-id = 'company.thebrowser.Browser'
+if.app-id = 'app.zen-browser.zen'
 run = 'move-node-to-workspace W'         # mnemonics W - Web browser
 
 [[on-window-detected]]

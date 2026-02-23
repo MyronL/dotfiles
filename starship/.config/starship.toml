@@ -125,7 +125,8 @@ format = '[[($all_status$ahead_behind )](fg:base bg:green)]($style)'
 [nodejs]
 symbol = ""
 style = "bg:teal"
-format = '[[ $symbol( $version) ](fg:base bg:teal)]($style)'
+detect_extensions = []
+format = '[[ $symbol ](fg:base bg:teal)]($style)'
 
 [c]
 symbol = " "
