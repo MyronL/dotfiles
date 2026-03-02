@@ -8,6 +8,7 @@ Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/). m
 |-----------|------|-------------|
 | `aerospace/` | [AeroSpace](https://github.com/nikitabobko/AeroSpace) | i3-inspired tiling window manager for macOS |
 | `bat/` | [bat](https://github.com/sharkdp/bat) | `cat` replacement with syntax highlighting |
+| `claude/` | [Claude Code](https://docs.anthropic.com/en/docs/claude-code) | Anthropic's CLI for Claude |
 | `delta/` | [delta](https://github.com/dandavid/delta) | Git diff viewer with syntax highlighting |
 | `gh/` | [GitHub CLI](https://cli.github.com/) | GitHub CLI aliases and settings |
 | `ghostty/` | [Ghostty](https://ghostty.org/) | GPU-accelerated terminal emulator |
@@ -82,10 +83,11 @@ The install script will:
 5. Install [`borders`](https://github.com/FelixKratz/JankyBorders) for AeroSpace window borders
 6. Install [TPM](https://github.com/tmux-plugins/tpm) (Tmux Plugin Manager)
 7. Install Node.js LTS via nvm
-8. Stow all dotfiles into `$HOME` (uses `--adopt` to handle existing files)
-9. Install tmux plugins via TPM
-10. Reload tmux config if running inside a tmux session
-11. Build the bat theme cache
+8. Install [Claude Code](https://docs.anthropic.com/en/docs/claude-code) globally via npm
+9. Stow all dotfiles into `$HOME` (prompts to resolve conflicts with existing files)
+10. Install tmux plugins via TPM
+11. Reload tmux config if running inside a tmux session
+12. Build the bat theme cache
 
 After running, open Neovim to auto-install plugins via lazy.nvim.
 

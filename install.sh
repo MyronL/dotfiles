@@ -71,11 +71,85 @@ mkdir -p "$NVM_DIR"
 [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"
 nvm install --lts
 
+echo "==> Installing/updating Claude Code"
+npm install -g @anthropic-ai/claude-code@latest
+
 echo "==> Stowing dotfiles"
-cd "$(dirname "$0")"
-for dir in aerospace bat delta gh ghostty git lazygit nvim starship tmux wezterm zsh; do
+DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$DOTFILES_DIR"
+
+resolve_conflicts() {
+    local pkg="$1"
+    # Dry-run stow to detect conflicts
+    local output
+    output=$(stow -n "$pkg" 2>&1) || true
+
+    # Extract conflicting file paths from stow output
+    local conflicts=()
+    while IFS= read -r line; do
+        # stow reports: "existing target is neither a link nor a directory: <path>"
+        if [[ "$line" =~ existing\ target\ is\ neither\ a\ link\ nor\ a\ directory:\ (.+) ]]; then
+            conflicts+=("${BASH_REMATCH[1]}")
+        fi
+    done <<< "$output"
+
+    if [ ${#conflicts[@]} -eq 0 ]; then
+        stow "$pkg"
+        return
+    fi
+
+    echo ""
+    echo "    Conflicts found for '$pkg':"
+    for file in "${conflicts[@]}"; do
+        local target="$HOME/$file"
+        local source="$DOTFILES_DIR/$pkg/$file"
+        echo ""
+        echo "    --- $file ---"
+        if diff -q "$source" "$target" &>/dev/null; then
+            echo "    Files are identical. Replacing with symlink."
+            rm "$target"
+        else
+            # Show a short diff
+            echo "    Diff (dotfiles vs existing):"
+            diff --color=auto -u "$source" "$target" | head -30 || true
+            echo ""
+            echo "    What do you want to do?"
+            echo "      [d] Use dotfiles version (override existing)"
+            echo "      [e] Keep existing version (adopt into dotfiles)"
+            echo "      [s] Skip this file"
+            while true; do
+                read -rp "    Choice [d/e/s]: " choice
+                case "$choice" in
+                    d|D)
+                        rm "$target"
+                        echo "    -> Will use dotfiles version"
+                        break
+                        ;;
+                    e|E)
+                        cp "$target" "$source"
+                        rm "$target"
+                        echo "    -> Adopted existing version into dotfiles"
+                        break
+                        ;;
+                    s|S)
+                        echo "    -> Skipped"
+                        break
+                        ;;
+                    *)
+                        echo "    Invalid choice. Enter d, e, or s."
+                        ;;
+                esac
+            done
+        fi
+    done
+
+    # Stow whatever is left (skipped files may still cause conflicts, so use --override)
+    stow "$pkg" 2>/dev/null || true
+}
+
+for dir in aerospace bat claude delta gh ghostty git lazygit nvim starship tmux wezterm zsh; do
     echo "    Stowing $dir"
-    stow --adopt "$dir"
+    resolve_conflicts "$dir"
 done
 
 echo "==> Installing tmux plugins"
