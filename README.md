@@ -100,7 +100,7 @@ After running, open Neovim to auto-install plugins via lazy.nvim.
 Each directory is also a standalone stow package if you prefer to install selectively:
 
 ```sh
-stow zsh
-stow nvim
-stow git
+stow --no-folding zsh
+stow --no-folding nvim
+stow --no-folding git
 ```

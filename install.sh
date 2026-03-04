@@ -80,21 +80,25 @@ cd "$DOTFILES_DIR"
 
 resolve_conflicts() {
     local pkg="$1"
-    # Dry-run stow to detect conflicts
+    # Dry-run stow to detect conflicts (--no-folding ensures individual file
+    # symlinks are created instead of directory-level symlinks, which avoids
+    # conflicts with directories like ~/.claude/ that programs actively manage)
     local output
-    output=$(stow -n "$pkg" 2>&1) || true
+    output=$(stow -n --no-folding "$pkg" 2>&1) || true
 
     # Extract conflicting file paths from stow output
     local conflicts=()
     while IFS= read -r line; do
-        # stow reports: "existing target is neither a link nor a directory: <path>"
-        if [[ "$line" =~ existing\ target\ is\ neither\ a\ link\ nor\ a\ directory:\ (.+) ]]; then
+        # stow reports conflicts like:
+        #   "existing target is neither a link nor a directory: <path>"
+        #   "existing target is stowed to a different package: <path>"
+        if [[ "$line" =~ \*\ existing\ target.*:\ (.+) ]]; then
             conflicts+=("${BASH_REMATCH[1]}")
         fi
     done <<< "$output"
 
     if [ ${#conflicts[@]} -eq 0 ]; then
-        stow "$pkg"
+        stow --no-folding "$pkg"
         return
     fi
 
@@ -144,7 +148,7 @@ resolve_conflicts() {
     done
 
     # Stow whatever is left (skipped files may still cause conflicts, so use --override)
-    stow "$pkg" 2>/dev/null || true
+    stow --no-folding "$pkg" 2>/dev/null || true
 }
 
 for dir in aerospace bat claude delta gh ghostty git lazygit nvim starship tmux wezterm zsh; do
