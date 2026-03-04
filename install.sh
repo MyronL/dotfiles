@@ -89,10 +89,12 @@ resolve_conflicts() {
     # Extract conflicting file paths from stow output
     local conflicts=()
     while IFS= read -r line; do
-        # stow reports conflicts like:
-        #   "existing target is neither a link nor a directory: <path>"
-        #   "existing target is stowed to a different package: <path>"
-        if [[ "$line" =~ \*\ existing\ target.*:\ (.+) ]]; then
+        # stow reports conflicts in different formats depending on version:
+        #   Old: "* existing target is neither a link nor a directory: <path>"
+        #   New: "* cannot stow ... over existing target <path> since ..."
+        if [[ "$line" =~ existing\ target\ is.*:\ (.+) ]]; then
+            conflicts+=("${BASH_REMATCH[1]}")
+        elif [[ "$line" =~ existing\ target\ (.+)\ since\  ]]; then
             conflicts+=("${BASH_REMATCH[1]}")
         fi
     done <<< "$output"
