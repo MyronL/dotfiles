@@ -30,6 +30,16 @@
 # fi
 
 EDITOR='nvim'
+export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+
+# History
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_REDUCE_BLANKS
 
 # Basic eza replacements for ls
 alias ls='eza --icons=auto'
@@ -41,6 +51,18 @@ if [[ "${widgets[zle-keymap-select]#user:}" == "starship_zle-keymap-select" || \
       "${widgets[zle-keymap-select]#user:}" == "starship_zle-keymap-select-wrapped" ]]; then
     zle -N zle-keymap-select "";
 fi
+
+# FZF — use fd as backend, TokyoNight Night theme
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .git'
+export FZF_DEFAULT_OPTS=" \
+  --height=40% --layout=reverse \
+  --color=fg:#c0caf5,bg:#1a1b26,hl:#bb9af7 \
+  --color=fg+:#c0caf5,bg+:#283457,hl+:#7dcfff \
+  --color=info:#7aa2f7,prompt:#7dcfff,pointer:#7dcfff \
+  --color=marker:#9ece6a,spinner:#9ece6a,header:#9ece6a"
+source <(fzf --zsh)
 
 eval "$(starship init zsh)"
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -54,14 +76,4 @@ export PATH="/opt/homebrew/bin:$PATH"
 
 export PATH="$HOME/.local/bin:$PATH"
 
-# Lazy-load nvm — only initializes when you first use node/npm/npx/nvm
-export NVM_DIR="$HOME/.nvm"
-nvm() {
-  unset -f nvm node npm npx
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-  nvm "$@"
-}
-node() { unset -f nvm node npm npx; [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"; node "$@"; }
-npm() { unset -f nvm node npm npx; [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"; npm "$@"; }
-npx() { unset -f nvm node npm npx; [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"; npx "$@"; }
+eval "$(mise activate zsh)"

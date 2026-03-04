@@ -1,0 +1,16 @@
+# Claude Code
+**/.claude/settings.local.json
+
+# macOS
+.DS_Store
+
+# Vim swap files
+*.swp
+*.swo
+
+# Environment secrets
+.env
+.env.local
+
+# JS dependencies
+node_modules/

@@ -11,51 +11,19 @@ else
     echo "    Xcode Command Line Tools already installed"
 fi
 
+DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
+
 echo "==> Installing Homebrew (if not installed)"
 if ! command -v brew &>/dev/null; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-echo "==> Installing Homebrew formulae"
-brew install \
-    bat \
-    eza \
-    fd \
-    fzf \
-    gh \
-    git \
-    git-delta \
-    lazygit \
-    neovim \
-    nvm \
-    ripgrep \
-    starship \
-    stow \
-    tmux \
-    zoxide \
-    zsh-autosuggestions \
-    zsh-syntax-highlighting
+echo "==> Installing Homebrew packages"
+brew bundle --file="$DOTFILES_DIR/Brewfile"
 
-casks=(
-    aerospace
-    font-meslo-lg-nerd-font
-    ghostty
-    wezterm
-)
-
-echo "==> Installing Homebrew casks"
-for cask in "${casks[@]}"; do
-    if brew list --cask "$cask" &>/dev/null; then
-        echo "    $cask already installed"
-    else
-        brew install --cask "$cask" || echo "    $cask skipped (may already exist outside Homebrew)"
-    fi
-done
-
-echo "==> Installing borders (window border utility for AeroSpace)"
-brew tap FelixKratz/formulae
-brew install borders
+echo "==> Setting macOS defaults"
+source "$DOTFILES_DIR/macos/defaults.sh"
 
 echo "==> Installing TPM (Tmux Plugin Manager)"
 TPM_DIR="$HOME/.tmux/plugins/tpm"
@@ -65,17 +33,14 @@ else
     echo "    TPM already installed"
 fi
 
-echo "==> Setting up NVM and installing Node.js"
-export NVM_DIR="$HOME/.nvm"
-mkdir -p "$NVM_DIR"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"
-nvm install --lts
+echo "==> Setting up mise and installing Node.js"
+eval "$(mise activate bash)"
+mise use --global node@lts
 
 echo "==> Installing/updating Claude Code"
 npm install -g @anthropic-ai/claude-code@latest
 
 echo "==> Stowing dotfiles"
-DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$DOTFILES_DIR"
 
 resolve_conflicts() {
@@ -153,7 +118,9 @@ resolve_conflicts() {
     stow --no-folding "$pkg" 2>/dev/null || true
 }
 
-for dir in aerospace bat claude delta gh ghostty git lazygit nvim starship tmux wezterm zsh; do
+for dir in */; do
+    dir="${dir%/}"
+    [[ "$dir" == .* ]] && continue
     echo "    Stowing $dir"
     resolve_conflicts "$dir"
 done

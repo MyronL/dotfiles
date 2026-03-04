@@ -15,6 +15,7 @@ Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/). m
 | `git/` | [Git](https://git-scm.com/) | Global git configuration and ignore rules |
 | `lazygit/` | [LazyGit](https://github.com/jesseduffield/lazygit) | Git TUI with delta pager |
 | `nvim/` | [Neovim](https://neovim.io/) | LazyVim-based config with VSCode-Neovim support |
+| `ripgrep/` | [ripgrep](https://github.com/BurntSushi/ripgrep) | Fast recursive search with smart defaults |
 | `starship/` | [Starship](https://starship.rs/) | Cross-shell prompt |
 | `tmux/` | [tmux](https://github.com/tmux/tmux) | Terminal multiplexer |
 | `wezterm/` | [WezTerm](https://wezfurlong.org/wezterm/) | GPU-accelerated terminal emulator |
@@ -49,7 +50,7 @@ AeroSpace with automatic workspace assignment, vim-style navigation (`alt-hjkl`)
 
 ### Shell
 
-Zsh with `starship` prompt, `zoxide` (aliased to `cd`), `eza` (aliased to `ls`), `zsh-autosuggestions`, and `zsh-syntax-highlighting`. NVM for Node version management.
+Zsh with `starship` prompt, `zoxide` (aliased to `cd`), `eza` (aliased to `ls`), `zsh-autosuggestions`, `zsh-syntax-highlighting`, and `fzf` with TokyoNight colors and `fd` backend. `mise` for language version management.
 
 ### Terminal
 
@@ -82,16 +83,15 @@ The install script will:
 
 1. Check for **Xcode Command Line Tools** and prompt installation if missing
 2. Install [Homebrew](https://brew.sh/) if not present
-3. Install all CLI tools (`bat`, `eza`, `fd`, `fzf`, `gh`, `git`, `git-delta`, `lazygit`, `neovim`, `nvm`, `ripgrep`, `starship`, `stow`, `tmux`, `zoxide`, `zsh-autosuggestions`, `zsh-syntax-highlighting`)
-4. Install GUI apps (`aerospace`, `ghostty`, `wezterm`) and **MesloLGS Nerd Font** — skips any already installed
-5. Install [`borders`](https://github.com/FelixKratz/JankyBorders) for AeroSpace window borders
-6. Install [TPM](https://github.com/tmux-plugins/tpm) (Tmux Plugin Manager)
-7. Install Node.js LTS via nvm
-8. Install [Claude Code](https://docs.anthropic.com/en/docs/claude-code) globally via npm
-9. Stow all dotfiles into `$HOME` (prompts to resolve conflicts with existing files)
-10. Install tmux plugins via TPM
-11. Reload tmux config if running inside a tmux session
-12. Build the bat theme cache
+3. Install all taps, formulae, and casks via `brew bundle` using the [`Brewfile`](Brewfile)
+4. Apply [macOS defaults](macos/defaults.sh) (keyboard, Dock, Finder, screenshots)
+5. Install [TPM](https://github.com/tmux-plugins/tpm) (Tmux Plugin Manager)
+6. Install Node.js LTS via mise
+7. Install [Claude Code](https://docs.anthropic.com/en/docs/claude-code) globally via npm
+8. Stow all dotfiles into `$HOME` (auto-detects packages, prompts to resolve conflicts)
+9. Install tmux plugins via TPM
+10. Reload tmux config if running inside a tmux session
+11. Build the bat theme cache
 
 After running, open Neovim to auto-install plugins via lazy.nvim.
 
@@ -104,3 +104,18 @@ stow --no-folding zsh
 stow --no-folding nvim
 stow --no-folding git
 ```
+
+## Future Additions
+
+- [x] **FZF configuration** — Set `FZF_DEFAULT_COMMAND` (use fd), `FZF_DEFAULT_OPTS` (theme colors), and source key-bindings/completion (`Ctrl-R` history, `Ctrl-T` file picker, `Alt-C` cd)
+- [ ] **Shell aliases & functions** — Directory navigation (`..`/`...`), safety aliases (`cp -i`, `mv -i`), quick git aliases in shell, utility functions (`mkcd`, `extract`)
+- [x] **Shell history config** — `HISTSIZE`, `SAVEHIST`, dedup options (`SHARE_HISTORY`, `HIST_IGNORE_DUPS`, `HIST_IGNORE_SPACE`)
+- [x] **macOS defaults script** — Automate system preferences (key repeat speed, Dock auto-hide, Finder hidden files, screenshot format, etc.)
+- [x] **Global gitignore** — `~/.config/git/ignore` for `.DS_Store`, `*.swp`, `.env`, `node_modules/`, `.idea/`, `.vscode/`
+- [ ] **SSH config** — Host aliases, `ControlMaster` multiplexing, key settings
+- [x] **Brewfile** — Replace inline `brew install` with a declarative `Brewfile` via `brew bundle`
+- [ ] **direnv** — Per-directory environment variables (auto-loads `.envrc`)
+- [x] **ripgrep config** — `~/.ripgreprc` with defaults like `--smart-case`, `--hidden`
+- [x] **mise** — Multi-language version manager to replace nvm/pyenv/rbenv with a single tool
+- [x] **Git extras** — Enable `rerere`, `pull.rebase`, `push.autoSetupRemote`, `init.defaultBranch`, commit signing
+- [ ] **editorconfig** — `.editorconfig` for consistent indent/encoding across projects
