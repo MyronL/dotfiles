@@ -12,10 +12,12 @@ Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/). m
 | `delta/` | [delta](https://github.com/dandavid/delta) | Git diff viewer with syntax highlighting |
 | `gh/` | [GitHub CLI](https://cli.github.com/) | GitHub CLI aliases and settings |
 | `ghostty/` | [Ghostty](https://ghostty.org/) | GPU-accelerated terminal emulator |
-| `git/` | [Git](https://git-scm.com/) | Global git configuration and ignore rules |
+| `git/` | [Git](https://git-scm.com/) | Global git configuration, ignore rules, and difftastic |
+| `glow/` | [Glow](https://github.com/charmbracelet/glow) | Markdown renderer with TokyoNight theme, paging, and line numbers |
 | `lazygit/` | [LazyGit](https://github.com/jesseduffield/lazygit) | Git TUI with delta pager |
 | `nvim/` | [Neovim](https://neovim.io/) | LazyVim-based config with VSCode-Neovim support |
 | `ripgrep/` | [ripgrep](https://github.com/BurntSushi/ripgrep) | Fast recursive search with smart defaults |
+| `sketchybar/` | [SketchyBar](https://github.com/FelixKratz/SketchyBar) | Custom macOS menu bar replacement |
 | `starship/` | [Starship](https://starship.rs/) | Cross-shell prompt |
 | `tmux/` | [tmux](https://github.com/tmux/tmux) | Terminal multiplexer |
 | `wezterm/` | [WezTerm](https://wezfurlong.org/wezterm/) | GPU-accelerated terminal emulator |
@@ -25,8 +27,8 @@ Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/). m
 
 ### Theme
 
-- **TokyoNight Night** across bat, delta, ghostty, wezterm, and neovim
-- **Catppuccin Mocha** for starship and tmux
+- **TokyoNight Night** across bat, delta, glow, ghostty, wezterm, and neovim
+- **Catppuccin Mocha** for starship, tmux, and sketchybar
 - **MesloLGS Nerd Font Mono** as the terminal font
 
 ### Neovim
@@ -50,7 +52,7 @@ AeroSpace with automatic workspace assignment, vim-style navigation (`alt-hjkl`)
 
 ### Shell
 
-Zsh with `starship` prompt, `zoxide` (aliased to `cd`), `eza` (aliased to `ls`), `zsh-autosuggestions`, `zsh-syntax-highlighting`, and `fzf` with TokyoNight colors and `fd` backend. `mise` for language version management.
+Zsh with `starship` prompt, `zsh-vi-mode` (surround, text objects, visual mode, cursor shape), `zoxide` (aliased to `cd`), `eza` (aliased to `ls`), `zsh-autosuggestions`, `zsh-syntax-highlighting`, and `fzf` with TokyoNight colors and `fd` backend. `mise` for language version management.
 
 ### Terminal
 
@@ -58,15 +60,19 @@ Both Ghostty and WezTerm configured with hidden title bars and matching fonts/th
 
 ### Git
 
-`delta` as the pager with the TokyoNight theme, `nvim` as the editor, and `zdiff3` conflict style.
+`delta` as the pager with the TokyoNight theme, `difftastic` as the structural diff tool for `git diff`, `nvim` as the editor, and `zdiff3` conflict style.
 
 ### Claude Code
 
 Custom statusline with Catppuccin Mocha colors showing git branch (with worktree and status counts), directory, language/runtime detection, lines changed with net indicator, context window usage with early degradation warnings, Max5 plan usage tracking (messages used/remaining with 5-hour window reset countdown), model tier glyph, vim mode, and session duration. Plan usage is tracked by scanning local JSONL history files with a 30-second cache.
 
+### SketchyBar
+
+Lua-based macOS menu bar replacement with Catppuccin Mocha theme and [SbarLua](https://github.com/FelixKratz/SbarLua). Left side shows Apple menu, color-coded AeroSpace workspaces (with app icons), and focused app. Right side shows calendar, WiFi, volume (scroll-to-adjust), CPU, battery, notifications (Outlook/Teams/Slack badge aggregation), weather (via WeatherKit/Swift), DND status, meeting indicator, microphone toggle, and media player with playback controls. Click any widget for a detail popup (IP address, top processes, battery health, forecast details, etc.). Smooth `tanh` animations for workspace changes, track changes, and notification bounces.
+
 ### tmux
 
-`C-s` prefix, vim-style pane navigation, Catppuccin theme, and session persistence via `tmux-resurrect` + `tmux-continuum`.
+`C-s` prefix with Catppuccin Mocha theme and session persistence via `tmux-resurrect` + `tmux-continuum` (auto-restore on startup). Vim-style pane navigation (`h/j/k/l`) and resizing (`H/J/K/L`). Vi copy-mode with `v` to select and `y` to yank to system clipboard. Fzf-powered session switcher (`prefix + f`). Windows and panes start at index 1 with automatic renumbering. 50k line scrollback buffer. Focus events enabled for vim autoread. Status bar shows [gitmux](https://github.com/arl/gitmux) (branch, ahead/behind, working tree status), current directory, and session name. Auto-attach to tmux on shell startup via `.zshrc`.
 
 ## Installation
 

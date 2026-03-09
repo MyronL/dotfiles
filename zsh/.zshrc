@@ -1,35 +1,10 @@
-# # Start the tmux session if not already in the tmux session
-# if [[ ! -n $TMUX  ]]; then
-#   # Get the session IDs
-#   session_ids="$(tmux list-sessions)"
-#
-#   # Create new session if no sessions exist
-#   if [[ -z "$session_ids" ]]; then
-#     tmux new-session
-#   fi
-#
-#   # Select from following choices
-#   #   - Attach existing session
-#   #   - Create new session
-#   #   - Start without tmux
-#   create_new_session="Create new session"
-#   start_without_tmux="Start without tmux"
-#   choices="$session_ids\n${create_new_session}:\n${start_without_tmux}:"
-#   choice="$(echo $choices | fzf | cut -d: -f1)"
-#
-#   if expr "$choice" : "[0-9]*$" >&/dev/null; then
-#     # Attach existing session
-#     tmux attach-session -t "$choice"
-#   elif [[ "$choice" = "${create_new_session}" ]]; then
-#     # Create new session
-#     tmux new-session
-#   elif [[ "$choice" = "${start_without_tmux}" ]]; then
-#     # Start without tmux
-#     :
-#   fi
-# fi
+# Auto-attach to tmux: attach existing session or create new one
+if [[ -z "$TMUX" ]] && command -v tmux &>/dev/null; then
+  tmux attach-session 2>/dev/null || tmux new-session
+fi
 
 EDITOR='nvim'
+export XDG_CONFIG_HOME="$HOME/.config"
 export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 
 # History
@@ -44,13 +19,8 @@ setopt HIST_REDUCE_BLANKS
 # Basic eza replacements for ls
 alias ls='eza --icons=auto'
 
-bindkey -e # for emacs
-
-# source $(brew --prefix)/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
-if [[ "${widgets[zle-keymap-select]#user:}" == "starship_zle-keymap-select" || \
-      "${widgets[zle-keymap-select]#user:}" == "starship_zle-keymap-select-wrapped" ]]; then
-    zle -N zle-keymap-select "";
-fi
+# Vim mode (zsh-vi-mode)
+source $(brew --prefix)/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
 
 # FZF — use fd as backend, TokyoNight Night theme
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
@@ -62,10 +32,12 @@ export FZF_DEFAULT_OPTS=" \
   --color=fg+:#c0caf5,bg+:#283457,hl+:#7dcfff \
   --color=info:#7aa2f7,prompt:#7dcfff,pointer:#7dcfff \
   --color=marker:#9ece6a,spinner:#9ece6a,header:#9ece6a"
-source <(fzf --zsh)
-
-eval "$(starship init zsh)"
-source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+# Re-init keybinding-dependent plugins after zsh-vi-mode takes over
+zvm_after_init() {
+  source <(fzf --zsh)
+  source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+  eval "$(starship init zsh)"
+}
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 eval "$(zoxide init zsh --cmd cd)"
 

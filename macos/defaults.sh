@@ -82,10 +82,19 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 
 ###############################################################################
+# Menu Bar                                                                    #
+###############################################################################
+
+# Auto-hide the menu bar (always)
+# macOS Tahoe uses AutoHideMenuBarOption in com.apple.controlcenter
+# Values: 0=Never, 1=In Full Screen Only, 2=On Desktop Only, 3=Always
+defaults write com.apple.controlcenter AutoHideMenuBarOption -int 3
+
+###############################################################################
 # Restart affected applications                                               #
 ###############################################################################
 
-for app in "Dock" "Finder" "SystemUIServer"; do
+for app in "Dock" "Finder" "SystemUIServer" "ControlCenter"; do
     killall "$app" &>/dev/null || true
 done
 

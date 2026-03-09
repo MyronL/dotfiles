@@ -1,0 +1,11 @@
+#!/usr/bin/env lua
+
+-- Sketchybar Lua configuration entry point
+-- SbarLua: https://github.com/FelixKratz/SbarLua
+
+local config_dir = os.getenv("CONFIG_DIR")
+if config_dir then
+  package.path = config_dir .. "/?.lua;" .. package.path
+end
+
+require("init")

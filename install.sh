@@ -133,10 +133,36 @@ if [ -n "${TMUX:-}" ]; then
     tmux source-file ~/.tmux.conf
 fi
 
+echo "==> Restarting AeroSpace"
+if pgrep -x AeroSpace >/dev/null; then
+    pkill AeroSpace && sleep 1
+fi
+open -a AeroSpace
+
 echo "==> Building bat theme cache"
 bat cache --build
 
+echo "==> Installing SbarLua"
+SBARLUA_DIR="$HOME/.local/share/sketchybar_lua"
+if [ ! -f "$SBARLUA_DIR/sketchybar.so" ]; then
+    SBARLUA_TMP="$(mktemp -d)"
+    git clone https://github.com/FelixKratz/SbarLua.git "$SBARLUA_TMP"
+    (cd "$SBARLUA_TMP" && make install)
+    rm -rf "$SBARLUA_TMP"
+else
+    echo "    SbarLua already installed"
+fi
+
+echo "==> Setting up sketchybar"
+chmod +x ~/.config/sketchybar/sketchybarrc
+brew services start sketchybar
+
+echo "==> Clearing Dock"
+source "$DOTFILES_DIR/macos/dock.sh"
+
 echo ""
 echo "Done! Next steps:"
-echo "  1. Restart your terminal"
-echo "  2. Open Neovim — plugins will install automatically via lazy.nvim"
+echo "  1. Open Neovim — plugins will install automatically via lazy.nvim"
+
+echo "==> Restarting shell to apply changes..."
+exec zsh
