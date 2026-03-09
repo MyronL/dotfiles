@@ -1,1 +1,14 @@
 --theme="tokyonight_night"
+
+# Syntax highlighting for config files
+--map-syntax=".gitconfig:Git Config"
+--map-syntax="**/git/config:Git Config"
+--map-syntax=".gitignore:Git Ignore"
+--map-syntax="**/git/ignore:Git Ignore"
+--map-syntax="**/ghostty/config:INI"
+--map-syntax="**/ripgrep/.ripgreprc:Bash"
+--map-syntax=".ripgreprc:Bash"
+--map-syntax=".gitmux.conf:YAML"
+--map-syntax="**/gitmux.conf:YAML"
+--map-syntax=".tmux.conf:Bash"
+--map-syntax="**/tmux.conf:Bash"
