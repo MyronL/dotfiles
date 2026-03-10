@@ -70,8 +70,8 @@ outer.left = 15
 outer.bottom = 15
 outer.top = [
     { monitor."Built-in Retina Display" = 25 },
-    # { monitor."P27h-28" = 50 },
-    # { monitor."DELL U2720QM" = 50 },
+    { monitor."P27h-28" = 50 },
+    { monitor."DELL U2720QM" = 50 },
     25,
 ]
 outer.right = 15
@@ -264,3 +264,7 @@ run = 'move-node-to-workspace P'          # mnemonics P - Postman
 [[on-window-detected]]
 if.app-id = 'com.microsoft.teams2'
 run = 'move-node-to-workspace 1'
+
+[[on-window-detected]]
+if.app-id = 'com.hnc.Discord'
+run = 'move-node-to-workspace D'          # mnemonics D - Discord

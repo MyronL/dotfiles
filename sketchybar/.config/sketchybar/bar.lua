@@ -11,7 +11,7 @@ sbar.bar({
   margin = 0,
   corner_radius = 0,
   notch_width = 200,
-  display = "main",
+  display = "all",
   blur_radius = 30,
   shadow = false,
   sticky = true,

@@ -153,6 +153,18 @@ else
     echo "    SbarLua already installed"
 fi
 
+echo "==> Installing wifi-unredactor"
+WIFI_UNREDACTOR_APP="$HOME/Applications/wifi-unredactor.app"
+if [ ! -d "$WIFI_UNREDACTOR_APP" ]; then
+    WIFI_TMP="$(mktemp -d)"
+    git clone https://github.com/noperator/wifi-unredactor.git "$WIFI_TMP"
+    (cd "$WIFI_TMP" && ./build-and-install.sh)
+    rm -rf "$WIFI_TMP"
+    echo "    NOTE: Open wifi-unredactor once to grant Location Services permission"
+else
+    echo "    wifi-unredactor already installed"
+fi
+
 echo "==> Setting up sketchybar"
 chmod +x ~/.config/sketchybar/sketchybarrc
 brew services start sketchybar

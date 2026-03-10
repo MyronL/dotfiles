@@ -58,8 +58,8 @@ local function get_workspace_icons(ws, callback)
 
     local seen = {}
     local icon_str = ""
-    for app in result:gmatch("[^\r\n]+") do
-      app = app:match("^%s*(.-)%s*$")
+    for line in result:gmatch("[^\r\n]+") do
+      local app = line:match("^%s*(.-)%s*$")
       if app ~= "" and not seen[app] then
         seen[app] = true
         local icon = app_icons[app] or ":default:"
@@ -73,13 +73,13 @@ end
 -- Refresh which workspaces are visible (have windows or are focused)
 local function refresh_visibility()
   sbar.exec("aerospace list-workspaces --monitor all --empty no", function(occupied)
-    sbar.exec("aerospace list-workspaces --focused", function(focused)
-      focused = focused:match("^%s*(.-)%s*$")
+    sbar.exec("aerospace list-workspaces --focused", function(raw_focused)
+      local focused = raw_focused:match("^%s*(.-)%s*$")
 
       -- Build set of occupied workspaces
       local occupied_set = {}
-      for ws in occupied:gmatch("[^\r\n]+") do
-        ws = ws:match("^%s*(.-)%s*$")
+      for ws_line in occupied:gmatch("[^\r\n]+") do
+        local ws = ws_line:match("^%s*(.-)%s*$")
         occupied_set[ws] = true
       end
 
@@ -134,8 +134,8 @@ local handle = io.popen("aerospace list-workspaces --all")
 local result = handle:read("*a")
 handle:close()
 
-for workspace in result:gmatch("[^\r\n]+") do
-  workspace = workspace:match("^%s*(.-)%s*$") -- trim whitespace
+for ws_line in result:gmatch("[^\r\n]+") do
+  local workspace = ws_line:match("^%s*(.-)%s*$") -- trim whitespace
 
   local accent = workspace_colors[workspace] or colors.lavender
   local space = sbar.add("item", "aerospace." .. workspace, {
