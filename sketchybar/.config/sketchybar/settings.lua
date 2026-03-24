@@ -34,7 +34,7 @@ return {
     mic = 2,
     meeting = 5,
     dnd = 10,
-    weather = 600,
+    weather = 1800,
     notifications = 10,
   },
 }

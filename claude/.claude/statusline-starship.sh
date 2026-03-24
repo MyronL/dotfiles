@@ -117,84 +117,63 @@ fi
 # Short directory name (replace $HOME with ~)
 dir_short=$(echo "$cwd" | sed "s|$HOME|~|")
 
-# ── Plan usage tracking (Max5: 1000 msgs per 5hr window) ──
-PLAN_MSG_LIMIT=1000
-CACHE_FILE="/tmp/claude-statusline-usage.cache"
-CACHE_TTL=30  # seconds
+# ── Rate limits (native, Claude.ai subscribers) ──
+rate_5h=$(echo "$data" | jq -r '.rate_limits.five_hour.used_percentage // empty')
+rate_7d=$(echo "$data" | jq -r '.rate_limits.seven_day.used_percentage // empty')
+rate_5h_resets=$(echo "$data" | jq -r '.rate_limits.five_hour.resets_at // empty')
 
-update_usage_cache() {
-  local now_epoch cutoff_epoch cutoff_ts msg_count
-  now_epoch=$(date +%s)
-  cutoff_epoch=$((now_epoch - 18000))  # 5 hours ago
-  cutoff_ts=$(date -u -r "$cutoff_epoch" +%Y-%m-%dT%H:%M:%S 2>/dev/null || date -u -d "@$cutoff_epoch" +%Y-%m-%dT%H:%M:%S)
-
-  # Count assistant messages across all projects in the last 5 hours
-  msg_count=$(find "$HOME/.claude/projects" -name '*.jsonl' -mmin -300 -exec \
-    jq -r "select(.type == \"assistant\" and .timestamp > \"$cutoff_ts\") | .timestamp" {} \; 2>/dev/null | wc -l | tr -d ' ')
-
-  echo "${now_epoch} ${msg_count}" > "$CACHE_FILE"
-  echo "$msg_count"
-}
-
-# Read from cache or refresh
-plan_msgs=0
-if [ -f "$CACHE_FILE" ]; then
-  cache_data=$(cat "$CACHE_FILE")
-  cache_epoch=$(echo "$cache_data" | awk '{print $1}')
-  cache_msgs=$(echo "$cache_data" | awk '{print $2}')
-  now_epoch=$(date +%s)
-  if [ $((now_epoch - cache_epoch)) -lt "$CACHE_TTL" ]; then
-    plan_msgs=$cache_msgs
+# Rate limit color (5h window)
+if [ -n "$rate_5h" ]; then
+  rate_5h_int=$(printf '%.0f' "$rate_5h")
+  if [ "$rate_5h_int" -ge 80 ]; then
+    rate_color="$red"
+  elif [ "$rate_5h_int" -ge 60 ]; then
+    rate_color="$peach"
+  elif [ "$rate_5h_int" -ge 40 ]; then
+    rate_color="$yellow"
   else
-    plan_msgs=$(update_usage_cache)
+    rate_color="$green"
   fi
-else
-  plan_msgs=$(update_usage_cache)
+
+  # Rate limit bar (10 chars wide, same as context bar)
+  rate_filled=$((rate_5h_int / 10))
+  rate_empty=$((10 - rate_filled))
+  rate_bar=""
+  for ((i = 0; i < rate_filled; i++)); do rate_bar+="█"; done
+  for ((i = 0; i < rate_empty; i++)); do rate_bar+="░"; done
+
+  # Reset countdown from epoch seconds
+  reset_fmt=""
+  if [ -n "$rate_5h_resets" ]; then
+    now_epoch=$(date +%s)
+    reset_secs=$(printf '%.0f' "$rate_5h_resets")
+    remaining=$((reset_secs - now_epoch))
+    if [ "$remaining" -gt 0 ]; then
+      reset_hrs=$((remaining / 3600))
+      reset_mins=$(( (remaining % 3600) / 60 ))
+      reset_fmt="${reset_hrs}h${reset_mins}m"
+    fi
+  fi
 fi
-
-plan_remaining=$((PLAN_MSG_LIMIT - plan_msgs))
-[ "$plan_remaining" -lt 0 ] && plan_remaining=0
-plan_pct=$((plan_msgs * 100 / PLAN_MSG_LIMIT))
-
-# Plan usage color
-if [ "$plan_pct" -ge 80 ]; then
-  plan_color="$red"
-elif [ "$plan_pct" -ge 60 ]; then
-  plan_color="$peach"
-elif [ "$plan_pct" -ge 40 ]; then
-  plan_color="$yellow"
-else
-  plan_color="$green"
-fi
-
-# Reset countdown (time until 5hr window rolls)
-now_epoch=$(date +%s)
-# Align to 5hr blocks from midnight UTC
-block_secs=18000
-day_start=$(date -u -j -f '%Y-%m-%dT%H:%M:%S' "$(date -u +%Y-%m-%dT00:00:00)" +%s 2>/dev/null || date -u -d "$(date -u +%Y-%m-%d)" +%s)
-elapsed_today=$((now_epoch - day_start))
-current_block_start=$((day_start + (elapsed_today / block_secs) * block_secs))
-block_end=$((current_block_start + block_secs))
-reset_secs=$((block_end - now_epoch))
-reset_hrs=$((reset_secs / 3600))
-reset_mins=$(( (reset_secs % 3600) / 60 ))
-reset_fmt="${reset_hrs}h${reset_mins}m"
 
 # ── Build output ──
 line=""
-# Vim mode
-if [ -n "$vim_mode" ]; then
-  case "$vim_mode" in
-    NORMAL)  line+="${green}${vim_mode}${reset}" ;;
-    INSERT)  line+="${blue}${vim_mode}${reset}" ;;
-    VISUAL)  line+="${lavender}${vim_mode}${reset}" ;;
-    *)       line+="${text}${vim_mode}${reset}" ;;
-  esac
-  line+="${dim} │ ${reset}"
-fi
+# TODO: add vim mode back when Claude Code allows hiding the built-in "-- INSERT --" indicator
+# if [ -n "$vim_mode" ]; then
+#   case "$vim_mode" in
+#     NORMAL)  line+="${green}${vim_mode}${reset}" ;;
+#     INSERT)  line+="${blue}${vim_mode}${reset}" ;;
+#     VISUAL)  line+="${lavender}${vim_mode}${reset}" ;;
+#     *)       line+="${text}${vim_mode}${reset}" ;;
+#   esac
+#   line+="${dim} │ ${reset}"
+# fi
+# Directory
+line+="${peach}${dir_short}${reset}"
+line+="${dim} │ ${reset}"
 # Git branch + worktree + status counts
 if [ -n "$branch" ]; then
-  line+="${green} ${branch}${worktree}${reset}"
+  line+="${green}${branch}${worktree}${reset}"
   git_counts=""
   [ "$staged" -gt 0 ] && git_counts+="${green}+${staged}${reset}"
   [ "$modified" -gt 0 ] && git_counts+="${peach}~${modified}${reset}"
@@ -202,9 +181,6 @@ if [ -n "$branch" ]; then
   [ -n "$git_counts" ] && line+=" ${git_counts}"
   line+="${dim} │ ${reset}"
 fi
-# Directory
-line+="${peach} ${dir_short}${reset}"
-line+="${dim} │ ${reset}"
 # Language/runtime
 if [ -n "$lang" ]; then
   line+="${teal}${lang}${reset}"
@@ -216,16 +192,21 @@ if [ "$lines_added" -gt 0 ] || [ "$lines_removed" -gt 0 ]; then
   line+="${dim} │ ${reset}"
 fi
 # Context (with early warning)
-line+="${bar_color}${bar} ${context_pct}%${ctx_label}${reset}"
+line+="${bar_color}☰${bar} ${context_pct}%${ctx_label}${reset}"
 line+="${dim} │ ${reset}"
-# Plan usage (compact)
-line+="${plan_color}${plan_msgs}/${PLAN_MSG_LIMIT}${reset} ${dim}(${reset}${lavender}${reset_fmt}${reset}${dim})${reset}"
-line+="${dim} │ ${reset}"
+# Rate limits (if available)
+if [ -n "$rate_5h" ]; then
+  line+="${rate_color}⚡${rate_bar} ${rate_5h_int}%${reset}"
+  [ -n "$reset_fmt" ] && line+=" ${dim}(${reset}${lavender}${reset_fmt}${reset}${dim})${reset}"
+  line+="${dim} │ ${reset}"
+fi
 # Model (glyph)
 line+="${blue}${model_glyph}${reset}"
 line+="${dim} │ ${reset}"
 # Duration
-line+="${text} ${duration_fmt}${reset}"
+line+="${text}${duration_fmt}${reset}"
 
 echo -e "$line"
+
+
 printf '\xe2\x80\x8b\n'

@@ -69,7 +69,7 @@ inner.vertical = 15
 outer.left = 15
 outer.bottom = 15
 outer.top = [
-    { monitor."Built-in Retina Display" = 25 },
+    { monitor."Built-in Retina Display" = 15 },
     { monitor."P27h-28" = 50 },
     { monitor."DELL U2720QM" = 50 },
     25,

@@ -39,13 +39,15 @@ zvm_after_init() {
   eval "$(starship init zsh)"
 }
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-eval "$(zoxide init zsh --cmd cd)"
 
 # Add Homebrew bash to system path
 export PATH="/opt/homebrew/bin:$PATH"
 
-
-
 export PATH="$HOME/.local/bin:$PATH"
 
 eval "$(mise activate zsh)"
+
+# zoxide must be last — it wraps `cd` and breaks if anything re-defines it after
+# Disable zoxide's doctor check — mise's chpwd_functions manipulation causes false positives
+export _ZO_DOCTOR=0
+eval "$(zoxide init zsh --cmd cd)"

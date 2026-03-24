@@ -64,7 +64,7 @@ Both Ghostty and WezTerm configured with hidden title bars and matching fonts/th
 
 ### Claude Code
 
-Custom statusline with Catppuccin Mocha colors showing git branch (with worktree and status counts), directory, language/runtime detection, lines changed with net indicator, context window usage with early degradation warnings, Max5 plan usage tracking (messages used/remaining with 5-hour window reset countdown), model tier glyph, vim mode, and session duration. Plan usage is tracked by scanning local JSONL history files with a 30-second cache.
+Custom statusline with Catppuccin Mocha colors showing directory, git branch (with worktree and status counts), language/runtime detection, lines changed with net indicator, context window usage with early degradation warnings, native rate limit tracking (5-hour and 7-day usage percentage with reset countdown), model tier glyph, and session duration.
 
 ### SketchyBar
 
