@@ -121,6 +121,7 @@ dir_short=$(echo "$cwd" | sed "s|$HOME|~|")
 rate_5h=$(echo "$data" | jq -r '.rate_limits.five_hour.used_percentage // empty')
 rate_7d=$(echo "$data" | jq -r '.rate_limits.seven_day.used_percentage // empty')
 rate_5h_resets=$(echo "$data" | jq -r '.rate_limits.five_hour.resets_at // empty')
+rate_7d_resets=$(echo "$data" | jq -r '.rate_limits.seven_day.resets_at // empty')
 
 # Rate limit color (5h window)
 if [ -n "$rate_5h" ]; then
@@ -152,6 +153,40 @@ if [ -n "$rate_5h" ]; then
       reset_hrs=$((remaining / 3600))
       reset_mins=$(( (remaining % 3600) / 60 ))
       reset_fmt="${reset_hrs}h${reset_mins}m"
+    fi
+  fi
+fi
+
+# Rate limit color (7d window)
+if [ -n "$rate_7d" ]; then
+  rate_7d_int=$(printf '%.0f' "$rate_7d")
+  if [ "$rate_7d_int" -ge 80 ]; then
+    rate_7d_color="$red"
+  elif [ "$rate_7d_int" -ge 60 ]; then
+    rate_7d_color="$peach"
+  elif [ "$rate_7d_int" -ge 40 ]; then
+    rate_7d_color="$yellow"
+  else
+    rate_7d_color="$green"
+  fi
+
+  # 7d bar (10 chars wide)
+  rate_7d_filled=$((rate_7d_int / 10))
+  rate_7d_empty=$((10 - rate_7d_filled))
+  rate_7d_bar=""
+  for ((i = 0; i < rate_7d_filled; i++)); do rate_7d_bar+="█"; done
+  for ((i = 0; i < rate_7d_empty; i++)); do rate_7d_bar+="░"; done
+
+  # 7d reset countdown
+  reset_7d_fmt=""
+  if [ -n "$rate_7d_resets" ]; then
+    now_epoch=$(date +%s)
+    reset_7d_secs=$(printf '%.0f' "$rate_7d_resets")
+    remaining_7d=$((reset_7d_secs - now_epoch))
+    if [ "$remaining_7d" -gt 0 ]; then
+      reset_7d_days=$((remaining_7d / 86400))
+      reset_7d_hrs=$(( (remaining_7d % 86400) / 3600 ))
+      reset_7d_fmt="${reset_7d_days}d${reset_7d_hrs}h"
     fi
   fi
 fi
@@ -192,12 +227,18 @@ if [ "$lines_added" -gt 0 ] || [ "$lines_removed" -gt 0 ]; then
   line+="${dim} │ ${reset}"
 fi
 # Context (with early warning)
-line+="${bar_color}☰${bar} ${context_pct}%${ctx_label}${reset}"
+line+="${bar_color}󰧑 ${bar} ${context_pct}%${ctx_label}${reset}"
 line+="${dim} │ ${reset}"
 # Rate limits (if available)
 if [ -n "$rate_5h" ]; then
-  line+="${rate_color}⚡${rate_bar} ${rate_5h_int}%${reset}"
+  line+="${rate_color}󰔛 ${rate_bar} ${rate_5h_int}%${reset}"
   [ -n "$reset_fmt" ] && line+=" ${dim}(${reset}${lavender}${reset_fmt}${reset}${dim})${reset}"
+  line+="${dim} │ ${reset}"
+fi
+# 7-day rate limit (if available)
+if [ -n "$rate_7d" ]; then
+  line+="${rate_7d_color}󰃭 ${rate_7d_bar} ${rate_7d_int}%${reset}"
+  [ -n "$reset_7d_fmt" ] && line+=" ${dim}(${reset}${lavender}${reset_7d_fmt}${reset}${dim})${reset}"
   line+="${dim} │ ${reset}"
 fi
 # Model (glyph)
@@ -207,6 +248,4 @@ line+="${dim} │ ${reset}"
 line+="${text}${duration_fmt}${reset}"
 
 echo -e "$line"
-
-
 printf '\xe2\x80\x8b\n'
