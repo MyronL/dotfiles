@@ -45,9 +45,10 @@ export PATH="/opt/homebrew/bin:$PATH"
 
 export PATH="$HOME/.local/bin:$PATH"
 
+# Disable zoxide's doctor check — mise's chpwd_functions manipulation causes false positives
+export _ZO_DOCTOR=0
+
 eval "$(mise activate zsh)"
 
 # zoxide must be last — it wraps `cd` and breaks if anything re-defines it after
-# Disable zoxide's doctor check — mise's chpwd_functions manipulation causes false positives
-export _ZO_DOCTOR=0
 eval "$(zoxide init zsh --cmd cd)"

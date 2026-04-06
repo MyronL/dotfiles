@@ -15,6 +15,15 @@
 --   end,
 -- })
 
+-- Disable diagnostics for .env files
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  group = vim.api.nvim_create_augroup("disable_env_diagnostics", { clear = true }),
+  pattern = { ".env", ".env.*" },
+  callback = function(args)
+    vim.diagnostic.enable(false, { bufnr = args.buf })
+  end,
+})
+
 -------------------
 -- CUSTOM MACROS --
 -------------------

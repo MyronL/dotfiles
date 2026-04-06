@@ -23,10 +23,6 @@
     features = tokyonight-night
     dark = true      # or light = true, or omit for auto-detection
     line-numbers = true
-
-[diff]
-    external = difft
-
 [merge]
     conflictstyle = zdiff3
 
