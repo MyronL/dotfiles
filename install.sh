@@ -169,6 +169,9 @@ echo "==> Setting up sketchybar"
 chmod +x ~/.config/sketchybar/sketchybarrc
 brew services start sketchybar
 
+echo "==> Configuring git hooks"
+git -C "$DOTFILES_DIR" config core.hooksPath .githooks
+
 echo "==> Clearing Dock"
 source "$DOTFILES_DIR/macos/dock.sh"
 
