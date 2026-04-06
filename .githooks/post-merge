@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# post-merge hook — runs after git pull to refresh changed configs
+
+DOTFILES_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
+
+# Get list of files changed by the merge
+changed_files=$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD)
+
+changed() {
+    echo "$changed_files" | grep -q "$1"
+}
+
+echo ""
+echo "==> post-merge: checking what changed..."
+
+# Brewfile changed — install new packages
+if changed "^Brewfile"; then
+    echo "    Brewfile changed — running brew bundle..."
+    brew bundle --file="$DOTFILES_DIR/Brewfile"
+fi
+
+# Re-stow any packages whose configs changed
+stowed=false
+for dir in "$DOTFILES_DIR"/*/; do
+    dir="$(basename "$dir")"
+    [[ "$dir" == .* ]] && continue
+    if changed "^${dir}/"; then
+        echo "    $dir changed — re-stowing..."
+        (cd "$DOTFILES_DIR" && stow --no-folding -R "$dir" 2>/dev/null) || true
+        stowed=true
+    fi
+done
+
+# Tmux — reload config and install plugins
+if changed "^tmux/"; then
+    if [ -n "${TMUX:-}" ]; then
+        echo "    Reloading tmux config..."
+        tmux source-file ~/.tmux.conf
+    fi
+    if [ -x "$HOME/.tmux/plugins/tpm/bin/install_plugins" ]; then
+        echo "    Installing tmux plugins..."
+        "$HOME/.tmux/plugins/tpm/bin/install_plugins"
+    fi
+fi
+
+# AeroSpace — reload config
+if changed "^aerospace/"; then
+    echo "    Reloading AeroSpace..."
+    if pgrep -x AeroSpace >/dev/null; then
+        aerospace reload-config 2>/dev/null || true
+    fi
+fi
+
+# Sketchybar — restart
+if changed "^sketchybar/"; then
+    echo "    Restarting sketchybar..."
+    brew services restart sketchybar
+fi
+
+# Bat — rebuild theme cache
+if changed "^bat/"; then
+    echo "    Rebuilding bat cache..."
+    bat cache --build
+fi
+
+echo "==> post-merge: done!"
+echo ""
