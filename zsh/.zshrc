@@ -45,10 +45,23 @@ export PATH="/opt/homebrew/bin:$PATH"
 
 export PATH="$HOME/.local/bin:$PATH"
 
+# Enable Claude Code's flicker-free fullscreen rendering by default
+export CLAUDE_CODE_NO_FLICKER=1
+
 # Disable zoxide's doctor check — mise's chpwd_functions manipulation causes false positives
 export _ZO_DOCTOR=0
 
 eval "$(mise activate zsh)"
+
+_mise_prompt_install() {
+  local missing
+  missing=$(mise ls --missing 2>/dev/null)
+  if [[ -n "$missing" ]]; then
+    echo "$missing"
+    read -q "?Install missing mise tools? [y/N] " && { echo; mise install; } || echo
+  fi
+}
+chpwd_functions+=(_mise_prompt_install)
 
 # zoxide must be last — it wraps `cd` and breaks if anything re-defines it after
 eval "$(zoxide init zsh --cmd cd)"
