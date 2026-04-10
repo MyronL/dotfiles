@@ -3,7 +3,7 @@
 	co = checkout
 	ci = commit
 	br = branch
-	po = pull origin 
+	po = pull origin
 [user]
 	name = Myron Loke
 	email = myronloke1@gmail.com
@@ -31,6 +31,9 @@
 
 [push]
     autoSetupRemote = true
+
+[init]
+    defaultBranch = main
 
 [rerere]
     enabled = true

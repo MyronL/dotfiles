@@ -35,7 +35,11 @@ fi
 
 echo "==> Setting up mise and installing Node.js"
 eval "$(mise activate bash)"
-mise use --global node@lts
+if ! mise ls --installed node 2>/dev/null | grep -q lts; then
+    mise use --global node@lts
+else
+    echo "    Node.js LTS already installed"
+fi
 
 echo "==> Installing/updating Claude Code"
 npm install -g @anthropic-ai/claude-code@latest
@@ -180,4 +184,8 @@ echo "Done! Next steps:"
 echo "  1. Open Neovim — plugins will install automatically via lazy.nvim"
 
 echo "==> Restarting shell to apply changes..."
-exec zsh
+if [ -z "${TMUX:-}" ]; then
+    exec zsh
+else
+    echo "    Inside tmux — run 'source ~/.zshrc' or open a new pane to apply changes."
+fi

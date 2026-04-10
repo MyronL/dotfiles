@@ -9,12 +9,13 @@ export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 
 # History
 HISTFILE=~/.zsh_history
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=100000
+SAVEHIST=100000
 setopt SHARE_HISTORY
 setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_SPACE
 setopt HIST_REDUCE_BLANKS
+setopt HIST_VERIFY
 
 # Basic eza replacements for ls
 alias ls='eza --icons=auto'
@@ -39,9 +40,6 @@ zvm_after_init() {
   eval "$(starship init zsh)"
 }
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-# Add Homebrew bash to system path
-export PATH="/opt/homebrew/bin:$PATH"
 
 export PATH="$HOME/.local/bin:$PATH"
 

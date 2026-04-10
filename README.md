@@ -76,12 +76,17 @@ Lua-based macOS menu bar replacement with Catppuccin Mocha theme and [SbarLua](h
 
 ## Installation
 
-```sh
-# Clone the repo
-git clone <repo-url> ~/dotfiles
-cd ~/dotfiles
+### Quick bootstrap (fresh machine)
 
-# Run the install script (installs everything from scratch)
+```sh
+git clone https://github.com/MyronL/dotfiles.git ~/dotfiles && ~/dotfiles/install.sh
+```
+
+### Standard install
+
+```sh
+git clone git@github.com:MyronL/dotfiles.git ~/dotfiles
+cd ~/dotfiles
 ./install.sh
 ```
 
@@ -97,7 +102,11 @@ The install script will:
 8. Stow all dotfiles into `$HOME` (auto-detects packages, prompts to resolve conflicts)
 9. Install tmux plugins via TPM
 10. Reload tmux config if running inside a tmux session
-11. Build the bat theme cache
+11. Restart [AeroSpace](https://github.com/nikitabobko/AeroSpace)
+12. Build the bat theme cache
+13. Install [SbarLua](https://github.com/FelixKratz/SbarLua) and start [SketchyBar](https://github.com/FelixKratz/SketchyBar)
+14. Install [wifi-unredactor](https://github.com/noperator/wifi-unredactor)
+15. Configure git hooks and clear the Dock
 
 After running, open Neovim to auto-install plugins via lazy.nvim.
 
