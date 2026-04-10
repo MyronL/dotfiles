@@ -18,6 +18,7 @@ Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/). m
 | `nvim/` | [Neovim](https://neovim.io/) | LazyVim-based config with VSCode-Neovim support |
 | `ripgrep/` | [ripgrep](https://github.com/BurntSushi/ripgrep) | Fast recursive search with smart defaults |
 | `sketchybar/` | [SketchyBar](https://github.com/FelixKratz/SketchyBar) | Custom macOS menu bar replacement |
+| `ssh/` | [OpenSSH](https://www.openssh.com/) | SSH config with multiplexing and keychain integration |
 | `starship/` | [Starship](https://starship.rs/) | Cross-shell prompt |
 | `tmux/` | [tmux](https://github.com/tmux/tmux) | Terminal multiplexer |
 | `wezterm/` | [WezTerm](https://wezfurlong.org/wezterm/) | GPU-accelerated terminal emulator |
@@ -127,7 +128,7 @@ stow --no-folding git
 - [x] **Shell history config** — `HISTSIZE`, `SAVEHIST`, dedup options (`SHARE_HISTORY`, `HIST_IGNORE_DUPS`, `HIST_IGNORE_SPACE`)
 - [x] **macOS defaults script** — Automate system preferences (key repeat speed, Dock auto-hide, Finder hidden files, screenshot format, etc.)
 - [x] **Global gitignore** — `~/.config/git/ignore` for `.DS_Store`, `*.swp`, `.env`, `node_modules/`, `.idea/`, `.vscode/`
-- [ ] **SSH config** — Host aliases, `ControlMaster` multiplexing, key settings
+- [x] **SSH config** — Host aliases, `ControlMaster` multiplexing, key settings
 - [x] **Brewfile** — Replace inline `brew install` with a declarative `Brewfile` via `brew bundle`
 - [ ] **direnv** — Per-directory environment variables (auto-loads `.envrc`)
 - [x] **ripgrep config** — `~/.ripgreprc` with defaults like `--smart-case`, `--hidden`

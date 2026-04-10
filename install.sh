@@ -44,6 +44,9 @@ fi
 echo "==> Installing/updating Claude Code"
 npm install -g @anthropic-ai/claude-code@latest
 
+echo "==> Ensuring SSH sockets directory exists"
+mkdir -p ~/.ssh/sockets
+
 echo "==> Stowing dotfiles"
 cd "$DOTFILES_DIR"
 
