@@ -63,6 +63,23 @@ Both Ghostty and WezTerm configured with hidden title bars and matching fonts/th
 
 `delta` as the pager with the TokyoNight theme, `difftastic` as the structural diff tool for `git diff`, `nvim` as the editor, and `zdiff3` conflict style.
 
+### SSH
+
+Connection multiplexing via `ControlMaster` (sockets in `~/.ssh/sockets/`), `UseKeychain` + `AddKeysToAgent` for macOS keychain integration, and `IdentitiesOnly yes` to avoid offering every key to every host. The tracked config includes `~/.ssh/config.local` for machine-local overrides — create it on a fresh machine to hold work/client host aliases and identities that shouldn't live in a public repo:
+
+```sh
+touch ~/.ssh/config.local && chmod 600 ~/.ssh/config.local
+```
+
+Example entry for a second GitHub identity:
+
+```sshconfig
+Host github.com-work
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519_work
+```
+
 ### Claude Code
 
 Custom statusline with Catppuccin Mocha colors showing directory, git branch (with worktree and status counts), language/runtime detection, lines changed with net indicator, context window usage with early degradation warnings, native rate limit tracking (5-hour and 7-day usage percentage with reset countdown), model tier glyph, and session duration.
