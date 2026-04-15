@@ -3,14 +3,22 @@
 
 data=$(cat)
 
-# Parse fields from JSON
-model_id=$(echo "$data" | jq -r '.model.id // "unknown"')
-context_pct=$(echo "$data" | jq -r '.context_window.used_percentage // 0' | cut -d. -f1)
-lines_added=$(echo "$data" | jq -r '.cost.total_lines_added // 0')
-lines_removed=$(echo "$data" | jq -r '.cost.total_lines_removed // 0')
-cwd=$(echo "$data" | jq -r '.workspace.current_dir // ""')
-duration_ms=$(echo "$data" | jq -r '.cost.total_duration_ms // 0')
-vim_mode=$(echo "$data" | jq -r '.vim.mode // ""')
+# Parse all fields from JSON in a single jq call
+eval "$(echo "$data" | jq -r '[
+  @sh "model_id=\(.model.id // "unknown")",
+  @sh "context_pct_raw=\(.context_window.used_percentage // 0)",
+  @sh "lines_added=\(.cost.total_lines_added // 0)",
+  @sh "lines_removed=\(.cost.total_lines_removed // 0)",
+  @sh "cwd=\(.workspace.current_dir // "")",
+  @sh "duration_ms=\(.cost.total_duration_ms // 0)",
+  @sh "vim_mode=\(.vim.mode // "")",
+  @sh "session_name=\(.session_name // "")",
+  @sh "rate_5h=\(.rate_limits.five_hour.used_percentage // "")",
+  @sh "rate_7d=\(.rate_limits.seven_day.used_percentage // "")",
+  @sh "rate_5h_resets=\(.rate_limits.five_hour.resets_at // "")",
+  @sh "rate_7d_resets=\(.rate_limits.seven_day.resets_at // "")"
+] | join("\n")')"
+context_pct=${context_pct_raw%%.*}
 
 # Git info
 branch=$(git -C "$cwd" --no-optional-locks symbolic-ref --short HEAD 2>/dev/null || git -C "$cwd" --no-optional-locks rev-parse --short HEAD 2>/dev/null)
@@ -20,11 +28,14 @@ if [ -f "$cwd/.git" ]; then
 fi
 
 # Git status counts
+staged=0; modified=0; untracked=0
 if [ -n "$branch" ]; then
   git_status=$(git -C "$cwd" --no-optional-locks status --porcelain 2>/dev/null)
-  staged=$(echo "$git_status" | grep -c '^[MADRC]' 2>/dev/null || echo 0)
-  modified=$(echo "$git_status" | grep -c '^.[MD]' 2>/dev/null || echo 0)
-  untracked=$(echo "$git_status" | grep -c '^??' 2>/dev/null || echo 0)
+  if [ -n "$git_status" ]; then
+    staged=$(echo "$git_status" | grep -c '^[MADRC]' 2>/dev/null || true)
+    modified=$(echo "$git_status" | grep -c '^.[MD]' 2>/dev/null || true)
+    untracked=$(echo "$git_status" | grep -c '^??' 2>/dev/null || true)
+  fi
 fi
 
 # Model tier glyph (saves space vs full name)
@@ -117,11 +128,7 @@ fi
 # Short directory name (replace $HOME with ~)
 dir_short=$(echo "$cwd" | sed "s|$HOME|~|")
 
-# ── Rate limits (native, Claude.ai subscribers) ──
-rate_5h=$(echo "$data" | jq -r '.rate_limits.five_hour.used_percentage // empty')
-rate_7d=$(echo "$data" | jq -r '.rate_limits.seven_day.used_percentage // empty')
-rate_5h_resets=$(echo "$data" | jq -r '.rate_limits.five_hour.resets_at // empty')
-rate_7d_resets=$(echo "$data" | jq -r '.rate_limits.seven_day.resets_at // empty')
+# ── Rate limits (already parsed above) ──
 
 # Rate limit color (5h window)
 if [ -n "$rate_5h" ]; then
@@ -203,6 +210,11 @@ line=""
 #   esac
 #   line+="${dim} │ ${reset}"
 # fi
+# Session name (if set)
+if [ -n "$session_name" ]; then
+  line+="${lavender}${session_name}${reset}"
+  line+="${dim} │ ${reset}"
+fi
 # Directory
 line+="${peach}${dir_short}${reset}"
 line+="${dim} │ ${reset}"
