@@ -14,12 +14,12 @@ fi
 
 dockutil --remove all --no-restart
 
-# Add Downloads folder back (fan view, sorted by date added)
+# Add Downloads folder back (fan view, sorted by most recent)
 defaults write com.apple.dock persistent-others -array-add '<dict>
     <key>tile-data</key>
     <dict>
         <key>arrangement</key>
-        <integer>1</integer>
+        <integer>2</integer>
         <key>displayas</key>
         <integer>0</integer>
         <key>file-data</key>
