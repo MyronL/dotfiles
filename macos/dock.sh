@@ -13,6 +13,31 @@ if ! command -v dockutil &>/dev/null; then
 fi
 
 dockutil --remove all --no-restart
+
+# Add Downloads folder back (fan view, sorted by date added)
+defaults write com.apple.dock persistent-others -array-add '<dict>
+    <key>tile-data</key>
+    <dict>
+        <key>arrangement</key>
+        <integer>1</integer>
+        <key>displayas</key>
+        <integer>0</integer>
+        <key>file-data</key>
+        <dict>
+            <key>_CFURLString</key>
+            <string>file:///Users/'"$USER"'/Downloads/</string>
+            <key>_CFURLStringType</key>
+            <integer>15</integer>
+        </dict>
+        <key>file-type</key>
+        <integer>2</integer>
+        <key>showas</key>
+        <integer>1</integer>
+    </dict>
+    <key>tile-type</key>
+    <string>directory-tile</string>
+</dict>'
+
 killall Dock
 
-echo "    Dock cleared"
+echo "    Dock configured"
