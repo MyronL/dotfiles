@@ -71,6 +71,9 @@ defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
 defaults write com.apple.screencapture type -string "png"
 # Disable shadow in screenshots
 defaults write com.apple.screencapture disable-shadow -bool true
+# Save screenshots to ~/Screenshots instead of the Desktop
+mkdir -p "$HOME/Screenshots"
+defaults write com.apple.screencapture location -string "$HOME/Screenshots"
 
 ###############################################################################
 # Desktop Services                                                            #
