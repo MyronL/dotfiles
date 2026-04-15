@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # post-merge hook — runs after git pull to refresh changed configs
 
-DOTFILES_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
+DOTFILES_DIR="$(git rev-parse --show-toplevel)"
 
 # Get list of files changed by the merge
 changed_files=$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD)
