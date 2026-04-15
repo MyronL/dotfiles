@@ -63,5 +63,16 @@ if changed "^bat/"; then
     bat cache --build
 fi
 
+# Notices for things that can't be reloaded from a subshell
+if changed "^zsh/"; then
+    echo "    zsh config changed — run 'reload' to apply"
+fi
+if changed "^ghostty/\|^wezterm/"; then
+    echo "    terminal config changed — restart your terminal to apply"
+fi
+if changed "^nvim/" && pgrep -x nvim >/dev/null; then
+    echo "    nvim config changed — restart running nvim instances to apply"
+fi
+
 echo "==> post-merge: done!"
 echo ""

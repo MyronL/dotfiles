@@ -19,6 +19,7 @@ setopt HIST_VERIFY
 
 # Basic eza replacements for ls
 alias ls='eza --icons=auto'
+alias reload='exec zsh'
 
 # Vim mode (zsh-vi-mode)
 source $(brew --prefix)/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
