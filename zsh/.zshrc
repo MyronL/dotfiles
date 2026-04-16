@@ -39,6 +39,7 @@ zvm_after_init() {
   source <(fzf --zsh)
   source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
   eval "$(starship init zsh)"
+  eval "$(navi widget zsh)"
 }
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 

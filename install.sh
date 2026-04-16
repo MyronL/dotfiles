@@ -44,6 +44,20 @@ fi
 echo "==> Installing/updating Claude Code"
 npm install -g @anthropic-ai/claude-code@latest
 
+echo "==> Adding navi cheatsheet repos"
+add_navi_repo() {
+    local repo="$1"
+    local dir="$HOME/.local/share/navi/cheats/${repo/\//__}"
+    if [ ! -d "$dir" ]; then
+        git clone --depth 1 "https://github.com/${repo}" "$dir"
+    else
+        echo "    ${repo} already added"
+    fi
+}
+mkdir -p "$HOME/.local/share/navi/cheats"
+add_navi_repo "denisidoro/cheats"
+add_navi_repo "denisidoro/navi-tldr-pages"
+
 echo "==> Ensuring SSH sockets directory exists"
 mkdir -p ~/.ssh/sockets
 

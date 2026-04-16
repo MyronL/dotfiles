@@ -1,0 +1,7 @@
+% git, dotfiles
+
+# Amend the last commit without editing the message
+git commit --amend --no-edit
+
+# Show files changed in the last commit
+git show --stat --name-only HEAD

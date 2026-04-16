@@ -1,0 +1,8 @@
+cheats:
+  paths:
+    - ~/.config/navi/cheats
+    - ~/.local/share/navi/cheats
+
+finder:
+  command: fzf
+  overrides: --height=40% --layout=reverse
