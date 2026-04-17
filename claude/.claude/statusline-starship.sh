@@ -210,11 +210,6 @@ line=""
 #   esac
 #   line+="${dim} │ ${reset}"
 # fi
-# Session name (if set)
-if [ -n "$session_name" ]; then
-  line+="${lavender}${session_name}${reset}"
-  line+="${dim} │ ${reset}"
-fi
 # Directory
 line+="${peach}${dir_short}${reset}"
 line+="${dim} │ ${reset}"
