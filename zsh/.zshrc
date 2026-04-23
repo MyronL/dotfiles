@@ -45,6 +45,12 @@ source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 export PATH="$HOME/.local/bin:$PATH"
 
+# Rust / cargo — source the rustup-generated env if it exists,
+# otherwise fall back to the rustup toolchain dir directly.
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+[ -d "$HOME/.rustup/toolchains/stable-aarch64-apple-darwin/bin" ] && \
+  export PATH="$HOME/.rustup/toolchains/stable-aarch64-apple-darwin/bin:$PATH"
+
 # Enable Claude Code's flicker-free fullscreen rendering by default
 export CLAUDE_CODE_NO_FLICKER=1
 

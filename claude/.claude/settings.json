@@ -16,5 +16,10 @@
         "repo": "openai/codex-plugin-cc"
       }
     }
+  },
+  "effortLevel": "xhigh",
+  "skipAutoPermissionPrompt": true,
+  "permissions": {
+    "defaultMode": "auto"
   }
 }
