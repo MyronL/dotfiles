@@ -1,4 +1,7 @@
 {
+  "permissions": {
+    "defaultMode": "auto"
+  },
   "statusLine": {
     "type": "command",
     "command": "bash ~/.claude/statusline-starship.sh",
@@ -18,8 +21,8 @@
     }
   },
   "effortLevel": "xhigh",
+  "theme": "dark",
+  "editorMode": "vim",
   "skipAutoPermissionPrompt": true,
-  "permissions": {
-    "defaultMode": "auto"
-  }
+  "model": "opus[1m]"
 }
