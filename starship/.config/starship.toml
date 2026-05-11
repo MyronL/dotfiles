@@ -124,8 +124,8 @@ style = "bg:teal"
 format = '[[($all_status$ahead_behind )](fg:base bg:green)]($style)'
 
 [custom.worktree]
-command = "echo ''"
-when = "[ -f .git ]"
+command = "[ -f .git ] && echo ''"
+when = true
 style = "bg:green"
 format = '[ $output ](fg:base bg:green)'
 
